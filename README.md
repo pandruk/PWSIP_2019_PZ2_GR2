@@ -7,4 +7,4 @@ Skład zespołu:
   - Patryk Bagiński
   - Patryk Celiński
   - Przemysław Andruk
-  - Boguski Paweł
+  - Paweł Boguski
