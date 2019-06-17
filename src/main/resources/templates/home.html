@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header"></div>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"></div>
+
+<div class="tab-content">
+<!--Dodaj zadania tab-->
+    <div class="tab-pane active" id="addTaskTab">
+        <div class="container">
+            <div class="content-container clearfix">
+                <div class="row">
+                    <br/>
+                    <br/>
+                    <br/>
+                    <h1 class="content-title">Moje zadania</h1>
+
+                    <form th:object="${reqTask}" th:action="@{/task/saveTask}" method="post">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input id="taskName" th:field="*{taskName}" type="text" class="form-control"
+                                       placeholder="Nazwa zadania"/>
+                                <input th:field="*{description}" type="text" class="form-control"
+                                       placeholder="Krótki opis"/>
+                                <div class="col-md-4  input-group date" id='startDatePicker'>
+                                    <input th:field="*{taskDate}" class="form-control" name="taskDate"
+                                           placeholder="Data DD/MM/YYYY" id="taskDate"/>
+                                    </span>
+                                </div>
+                                <textarea class="form-control" th:field="*{content}" placeholder="Długi opis"></textarea>
+                                <button class="button">Dodaj zadanie</button>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="row">
+                    <div class="panel panel-info">
+                        <div class="panel-body">
+                            <table class="table table-bordered  table-striped table-responsive">
+                                <thead>
+                                <tr class="btn-info">
+                                    <th>Nazwa zadania</th>
+                                    <th>Krótki opis</th>
+                                    <th>Data</th>
+                                    <th>Długi opis</th>
+                                    <th>Edycja</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="task : ${allTask}">
+                                    <td th:text="${task.taskName}"></td>
+                                    <td th:text="${task.description}"></td>
+                                    <td th:text="${task.taskDate}"></td>
+                                    <td th:text="${task.content}"></td>
+                                    <td th:hidden="${task.id}"></td>
+                                    <td align="center">
+                                        <a th:href="@{/task/edit/{id}(id=${task.id})}">Edytuj</a>
+
+                                        <a data-toggle="modal" data-target="#modal-toTrash"
+                                           th:attr="data-target='#modal-toTrash'+${task.id}">Usuń</a>
+                                    </td>
+
+                                    <!-- usuwanie -->
+                                    <div class="modal modal-toTrash" th:id="modal-toTrash+${task.id}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-hidden="true">×
+                                                    </button>
+                                                    <h3 id="myModalLabel">Usunac?</h3>
+                                                </div>
+                                                <!--                                                <div class="modal-body">-->
+                                                <div class="potwierdz">
+                                                    <p class="text">na pewno usunac?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Anuluj</button>
+                                                    <a th:href="@{/task/trash/{id}(id=${task.id})}">
+                                                        <span class="btn btn-danger" value="delete">Usuń</span></a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--                                    koniec usuwania-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Usun zadania tab-->
+    <div class="tab-pane" id="trashTab">
+        <div class="container">
+            <div class="content-container clearfix">
+                <br/>
+                <br/>
+                <br/>
+                <h1 class="content-title">Kosz</h1>
+
+                <div class="panel panel-info">
+
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr class="btn-info">
+                                <th>Nazwa zadania</th>
+                                <th>Krótki opis</th>
+                                <th>Data</th>
+                                <th>Długi opis</th>
+                                <th>Edycja</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(allPassiveTask)}" class="btn-default">
+                                <td colspan="5" align="center">Brak zadań</td>
+                            </tr>
+                            <tr th:each="task : ${allPassiveTask}">
+                                <td th:text="${task.taskName}"></td>
+                                <td th:text="${task.description}"></td>
+                                <td th:text="${task.taskDate}"></td>
+                                <td th:text="${task.content}"></td>
+                                <td th:hidden="${task.id}"></td>
+                                <td align="center">
+                                    <a data-toggle="modal" data-target="#modal-delete"
+                                       th:attr="data-target='#modal-delete'+${task.id}">USUŃ</a>
+                                </td>
+                                <div class="modal modal-delete" th:id="modal-delete+${task.id }">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">×
+                                                </button>
+                                                <h3 id="delModalLabel">Delete Confirmation</h3>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="error-text">usun?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn " data-dismiss="modal" aria-hidden="true">
+                                                    Cancel
+                                                </button>
+                                                <a th:href="@{/task/delete/{id}(id=${task.id})}">
+                                                    <span class="btn btn-danger" value="delete">Delete</span></a>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<!--    Dodaj plan zajec tab -->
+
+    <div class="tab-pane" id="planZajecTab">
+        <div class="container">
+            <div class="content-container clearfix">
+                <br/>
+                <br/>
+                <br/>
+                <h1 class="content-title">Mój Plan Zajęć</h1>
+                <div class="panel panel-info">
+                    <div class="panel panel-info">
+                        <div class="panel-body">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr class="btn-info">
+                                    <th>Nazwa zadania</th>
+                                    <th>Krótki opis</th>
+                                    <th>Data</th>
+                                    <th>Długi opis</th>
+                                    <th>Usuń lub edytuj</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${#lists.isEmpty(allPassiveTask)}" class="btn-default">
+                                    <td colspan="5" align="center">Brak planu zajęć</td>
+                                </tr>
+                                <tr th:each="task : ${allPassiveTask}">
+                                    <td th:text="${task.taskName}"></td>
+                                    <td th:text="${task.description}"></td>
+                                    <td th:text="${task.taskDate}"></td>
+                                    <td th:text="${task.content}"></td>
+                                    <td th:hidden="${task.id}"></td>
+                                    <td align="center">
+                                        <a data-toggle="modal" data-target="#modal-delete"
+                                           th:attr="data-target='#modal-delete'+${task.id}">USUŃ</a>
+                                    </td>
+                                    <div class="modal modal-delete" th:id="modal-delete+${task.id }">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-hidden="true">×
+                                                    </button>
+                                                    <h3 id="delModalLabel2">Delete Confirmation</h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="error-text">usun?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn " data-dismiss="modal" aria-hidden="true">
+                                                        Cancel
+                                                    </button>
+                                                    <a th:href="@{/task/delete/{id}(id=${task.id})}">
+                                                        <span class="btn btn-danger" value="delete">Delete</span></a>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--    Uwagi -->
+
+
+    <div class="tab-pane" id="uwagiTab">
+        <div class="container">
+            <div class="content-container clearfix">
+                <br/>
+                <br/>
+                <br/>
+                <h1 class="content-title">Uwagi</h1>
+                <div class="panel panel-info">
+                    <div class="panel panel-info">
+                        <div class="panel-body">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr class="btn-info">
+                                    <th>Imię i nazwisko</th>
+                                    <th>Data</th>
+                                    <th>Informacje</th>
+                                    <th>Usuń lub edytuj</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${#lists.isEmpty(allPassiveTask)}" class="btn-default">
+                                    <td colspan="5" align="center">Brak uwag</td>
+                                </tr>
+                                <tr th:each="task : ${allPassiveTask}">
+                                    <td th:text="${task.taskName}"></td>
+                                    <td th:text="${task.description}"></td>
+                                    <td th:text="${task.taskDate}"></td>
+                                    <td th:text="${task.content}"></td>
+                                    <td th:hidden="${task.id}"></td>
+                                    <td align="center">
+                                        <a data-toggle="modal" data-target="#modal-delete"
+                                           th:attr="data-target='#modal-delete'+${task.id}">USUŃ</a>
+                                    </td>
+                                    <div class="modal modal-delete" th:id="modal-delete+${task.id }">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-hidden="true">×
+                                                    </button>
+                                                    <h3 id="delModalLabel3">Delete Confirmation</h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="error-text">usun?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn " data-dismiss="modal" aria-hidden="true">
+                                                        Cancel
+                                                    </button>
+                                                    <a th:href="@{/task/delete/{id}(id=${task.id})}">
+                                                        <span class="btn btn-danger" value="delete">Delete</span></a>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('#startDatePicker').datetimepicker({
+            defaultDate: 'now',
+            viewMode: 'days',
+            format: 'DD/MM/YYYY'
+        });
+    });
+
+
+</script>
+<script>
+    $('#modal-toTrash').on('show.bs.modal', function (e) {
+        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+        $('#modal-toTrashHiddenId').val($(this).find('.btn-ok').attr('href'));
+    });
+
+    $('#modal-delete').on('show.bs.modal', function (e) {
+        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+        $('#modal-deleteHiddenId').val($(this).find('.btn-ok').attr('href'));
+    });
+
+</script>
+</body>
+</html>

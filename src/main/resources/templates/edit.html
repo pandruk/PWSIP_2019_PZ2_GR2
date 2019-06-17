@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit</title>
+    <div th:replace="fragments/header :: header-css"/>
+</head>
+<body>
+<div th:replace="fragments/header :: header"/>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="compose">
+        <div class="container">
+            <div class="content-container">
+
+                <div class="row">
+                    <h1 class="content-title">Edit Task</h1>
+
+                    <form th:object="${editTask}" th:action="@{/task/editTask}" method="post">
+                        <input type="hidden" th:field="*{id}" th:value="*{id}"/>
+                        <input type="hidden" th:field="*{userId}" th:value="*{userId}"/>
+                        <input type="hidden" th:field="*{status}" th:value="*{status}"/>
+                        <input type="hidden" th:field="*{createDate}" th:value="*{createDate}"/>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input id="todoName2" th:field="*{taskName}"
+                                       type="text" class="form-control"
+                                       required="required"
+                                       placeholder="Task Name"/>
+                            </div>
+
+                            <div class="form-group">
+                                <input th:field="*{description}" type="text"
+                                       required="required"
+                                       placeholder="Description"/>
+                                <div class="col-md-4  input-group date" id='startDatePicker'>
+                                    <input th:field="*{taskDate}" class="form-control" name="taskDate" id="taskDate"/>
+                                </div>
+                                <textarea class="form-control" th:field="*{content}" placeholder="Details"
+                                          required="required"></textarea>
+                            </div>
+                        </div>
+                        <br/>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('#startDatePicker').datetimepicker({
+            viewMode: 'days',
+            format: 'DD/MM/YYYY'
+        });
+    });
+</script>
+</body>
+</html>

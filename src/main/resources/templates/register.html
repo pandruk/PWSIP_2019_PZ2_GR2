@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <meta name="description" content="spring-boot thymeleaf | Register ">
+    <div th:replace="fragments/header :: header-login-css"></div>
+</head>
+<body>
+<br/>
+
+<div class="row">
+    <div class="container">
+        <div class="login-register-form-section">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="col-xs-6"><a th:href="@{/login}">Login</a></li>
+                <li class="col-xs-6"><a class="active" href="#register" data-toggle="tab">Register</a></li>
+
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="register">
+
+
+                    <form id="registerForm" th:object="${reqUser}" th:action="@{/user/register}" method="post"
+                          class="form-horizontal">
+                        <div class="form-group ">
+                            <div class="input-group">
+                                <input th:field="*{username}" type="text" name="register_username"
+                                       class="form-control" placeholder="Username"
+                                       required="required" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="input-group">
+                                <input th:field="*{firstname}" type="text" name="register_firstname" class="form-control"
+                                       placeholder="Firstname" required="required" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="input-group">
+                                <input th:field="*{lastname}" type="text" name="register_firstname" class="form-control"
+                                       placeholder="Lastname" required="required" value=""/>
+                            </div>
+                        </div>
+
+                        <div class="form-group ">
+                            <div class="input-group">
+                                <input th:field="*{email}" type="email" name="register_email" class="form-control"
+                                       placeholder="Email" required="required" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="input-group">
+                                <input th:field="*{password}" type="password" name="register_password"
+                                       class="form-control" id="password"
+                                       placeholder="Password" required="required"/>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="input-group">
+                                <input th:field="*{password_2}" type="password" name="register_cpassword"
+                                       class="form-control" id="confirm_password"
+                                       placeholder="Confirm Password" required="required"/>
+                            </div>
+                        </div>
+                        <input type="submit" value="Register" class="btn btn-success btn-custom"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>
